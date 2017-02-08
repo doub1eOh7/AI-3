@@ -46,7 +46,7 @@ class Model {
 	}
 
 	void initGame() throws Exception {
-		BufferedImage bufferedImage = ImageIO.read(new File("terrain.png"));
+		BufferedImage bufferedImage = ImageIO.read(new File("resources/terrain.png"));
 		if(bufferedImage.getWidth() != 60 || bufferedImage.getHeight() != 60)
 			throw new Exception("Expected the terrain image to have dimensions of 60-by-60");
 		terrain = ((DataBufferByte)bufferedImage.getRaster().getDataBuffer()).getData();
