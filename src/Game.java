@@ -24,9 +24,9 @@ class Game
 		
 		//META Parameters
 		
-		double p = 0.4; //Probability of mutation
-		double d = 0.2; //Std Deviation for mutation
-		double survival = 0.9; //Probability winner survives (Natural Selection)
+		double p = 0.7; //Probability of mutation
+		double d = 1; //Std Deviation for mutation
+		double survival = 0.6; //Probability winner survives (Natural Selection)
 		int numberDead = 5; //Number that die from battle
 		int numberOfSecondParents = 20; //Number of second parents for replinishment
 		int powerDifference = 2; //Power difference when finding distance between parents
@@ -44,31 +44,37 @@ class Game
 		//Evolve for a long time
 		long prevtime = System.currentTimeMillis();
 		long averageTime = 0;
-		for(int repeat = 0; repeat < 10000; repeat++)
+		for(int repeat = 0; repeat < 1000; repeat++)
 		{
+			for(int i = 0; i < population.rows(); i++)
+			{
+				if(population.row(i)[291] > 0.1)
+				{
+					population.row(i)[291] -= 0.6/1000;
+				}
+			}
 			if((double)repeat / 10 % 5 == 0)
 			{
-				System.out.println("Percent Complete: " + (double)repeat / 100);
+				System.out.println("Percent Complete: " + (double)repeat / 10);
 				averageTime = (System.currentTimeMillis() - prevtime) / 50;
 				System.out.println("AverageExecutionTime: " + (averageTime));
 				prevtime = System.currentTimeMillis();
 			}
-			//Mutate
+			
+			//----------------- Mutate -----------------
 			long timeStart = System.currentTimeMillis();
 			for(int i = 0; i < 100; i++)
 			{
-				double[] chromosome = population.row(i);
-				double mutate = r.nextDouble();
-				if(mutate < population.row(i)[291])
+				if(r.nextDouble() < population.row(i)[291])
 				{
-					int j = Math.abs(r.nextInt()) % chromosome.length;
-					chromosome[j] = population.row(i)[292]*r.nextGaussian() + chromosome[j];
+					population.row(i)[Math.abs(r.nextInt()) % 100] += r.nextGaussian() * population.row(i)[292];
 				}
 			}
 			if((double)repeat / 10 % 5 == 0)
 			{
 				System.out.println("MutateTook: " + (System.currentTimeMillis() - timeStart));
 			}
+			//------------------------------------------
 			
 			//Natural Selection
 			int[] dead = new int[(int)population.row(0)[294]];
@@ -85,12 +91,12 @@ class Game
 				for(int temp = 0; temp < 291; temp++)
 				{
 					agent1weights[temp] = population.row(agent1Choice)[temp];
-					agent2weights[temp] = population.row(agent1Choice)[temp];
+					agent2weights[temp] = population.row(agent2Choice)[temp];
 				}
 				NeuralAgent agent1 = new NeuralAgent(agent1weights);
 				NeuralAgent agent2 = new NeuralAgent(agent2weights);
 				try{
-					winner = Controller.doBattleNoGui(agent1, agent2);					
+					winner = Controller.doBattleNoGui(population.row(agent1Choice)[], agent2);					
 				}catch(Exception e)
 				{
 					System.out.println("Exception Thrown:\n" + e.getMessage());
@@ -200,7 +206,7 @@ class Game
 		double[] returnDoubles = new double[291];
 		for(int i = 0; i < 291; i++)
 		{
-			returnDoubles[i] = population.row(10)[i];
+			returnDoubles[i] = population.row(0)[i];
 		}
 		return returnDoubles;
 	}
