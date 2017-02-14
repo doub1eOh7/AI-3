@@ -154,7 +154,7 @@ class Game
 		//META Parameters
 		
 		double p = 0.7; //Probability of mutation
-		double d = 0.8; //Std Deviation for mutation
+		double d = 10; //Std Deviation for mutation
 		double survival = 0.8; //Probability winner survives (Natural Selection)
 		int numberDead = 20; //Number that die from battle
 		int numberOfSecondParents = 20; //Number of second parents for replinishment
@@ -199,7 +199,10 @@ class Game
 			//}
 
 			//Replinish
+			System.out.println("Dead: " + Arrays.toString(dead));
+			System.out.println("Before Replenish: " + Arrays.toString(population.row(dead[0])));
 			Replenish(population, dead);
+			System.out.println("After Replenish:  " + Arrays.toString(population.row(dead[0])));
 			//System.out.println("After Replenish:  " + Arrays.toString(population.row(0)));
 
 		}
