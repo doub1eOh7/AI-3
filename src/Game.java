@@ -15,7 +15,6 @@ class Game
 				population.row(i)[Math.abs(r.nextInt()) % 100] += r.nextGaussian() * population.row(i)[292];
 			}
 		}
-		
 	}
 	
 	private static int[] NaturalSelection(Matrix population)
