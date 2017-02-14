@@ -12,8 +12,13 @@ class Game
 		{
 			if(r.nextDouble() < population.row(i)[291])
 			{
-				population.row(i)[Math.abs(r.nextInt()) % 100] += r.nextGaussian() * population.row(i)[292];
+				population.row(i)[Math.abs(r.nextInt()) % population.row(i).length] += r.nextGaussian() * population.row(i)[292];
 			}
+		}
+		for(int i = 0; i < 100; i++)
+		{
+			if(population.row(i)[291] > 1)
+				population.row(i)[291] = 1;
 		}
 	}
 	
@@ -144,17 +149,12 @@ class Game
 			for(int j = 0; j < chromosome.length; j++)
 				chromosome[j] = 0.03 * r.nextGaussian();
 		}
-		//System.out.println(population.toString());
-
+		System.out.println(Arrays.toString(population.row(0)));
 		// Evolve the population
-		// todo: YOUR CODE WILL START HERE.
-		//       Please write some code to evolve this population.
-		//       (For tournament selection, you will need to call Controller.doBattleNoGui(agent1, agent2).)
 		
 		//META Parameters
-		
-		double p = 0.7; //Probability of mutation
-		double d = 10; //Std Deviation for mutation
+		double p = 0.9; //Probability of mutation
+		double d = 5; //Std Deviation for mutation
 		double survival = 0.8; //Probability winner survives (Natural Selection)
 		int numberDead = 20; //Number that die from battle
 		int numberOfSecondParents = 20; //Number of second parents for replinishment
@@ -171,18 +171,20 @@ class Game
 		}
 		
 		//Evolve for a long time
-		for(int repeat = 0; repeat < 1000; repeat++)
+		for(int repeat = 0; repeat < 100; repeat++)
 		{
+			//Reduce probability of mutation slowly
 			for(int i = 0; i < population.rows(); i++)
 			{
-				if(population.row(i)[291] > 0.1)
+				if(population.row(i)[291] > 0.1 && population.row(i)[292] > 0.1)
 				{
-					population.row(i)[291] -= 0.6/100;
+					//population.row(i)[291] -= 0.6/100;
+					//population.row(i)[292] -= 0.9/100;
 				}
 			}
-			if((double)repeat / 10 % 5 == 0)
+			if((double)repeat / 1 % 5 == 0)
 			{
-				System.out.println("Percent Complete: " + (double)repeat / 10);
+				System.out.println("Percent Complete: " + (double)repeat / 1);
 			}
 			
 			//Mutate
@@ -199,10 +201,10 @@ class Game
 			//}
 
 			//Replinish
-			System.out.println("Dead: " + Arrays.toString(dead));
-			System.out.println("Before Replenish: " + Arrays.toString(population.row(dead[0])));
+			//System.out.println("Dead: " + Arrays.toString(dead));
+			//System.out.println("Before Replenish: " + Arrays.toString(population.row(dead[0])));
 			Replenish(population, dead);
-			System.out.println("After Replenish:  " + Arrays.toString(population.row(dead[0])));
+			//System.out.println("After Replenish:  " + Arrays.toString(population.row(dead[0])));
 			//System.out.println("After Replenish:  " + Arrays.toString(population.row(0)));
 
 		}
@@ -242,6 +244,7 @@ class Game
 	public static void main(String[] args) throws Exception
 	{
 		double[] w = evolveWeights();
+		System.out.println(Arrays.toString(w));
 		Controller.doBattle(new ReflexAgent(), new NeuralAgent(w));
 		System.out.println("Done");
 	}
